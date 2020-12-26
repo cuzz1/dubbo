@@ -100,6 +100,9 @@ public class ExtensionLoader<T> {
      */
     private final Class<?> type;
 
+    /**
+     * 表示拓展类实例工厂，可以通过工厂创建实例
+     */
     private final ExtensionFactory objectFactory;
 
     /**
@@ -112,19 +115,30 @@ public class ExtensionLoader<T> {
      */
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<>();
 
+    /**
+     * 自动激活缓存
+     */
     private final Map<String, Object> cachedActivates = new ConcurrentHashMap<>();
 
     /**
      * 缓存了该 ExtensionLoader 加载的扩展名与扩展实现对象之间的映射关系。
-     *
      */
     private final ConcurrentMap<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<>();
 
+    /**
+     * 自动激活实例
+     */
     private final Holder<Object> cachedAdaptiveInstance = new Holder<>();
+    /**
+     * 缓存 Adaptive
+     */
     private volatile Class<?> cachedAdaptiveClass = null;
     private String cachedDefaultName;
     private volatile Throwable createAdaptiveInstanceError;
 
+    /**
+     * 缓存包装类
+     */
     private Set<Class<?>> cachedWrapperClasses;
 
     private Map<String, IllegalStateException> exceptions = new ConcurrentHashMap<>();
@@ -694,24 +708,28 @@ public class ExtensionLoader<T> {
 
         try {
             for (Method method : instance.getClass().getMethods()) {
+                // 判断是否为set方法
                 if (!isSetter(method)) {
                     continue;
                 }
-                /**
-                 * Check {@link DisableInject} to see if we need auto injection for this property
-                 */
+
+                // 如果有 @DisableInject 也不注入
                 if (method.getAnnotation(DisableInject.class) != null) {
                     continue;
                 }
+                // 获取参数类型，如果是基本类型也忽略
                 Class<?> pt = method.getParameterTypes()[0];
                 if (ReflectUtils.isPrimitives(pt)) {
                     continue;
                 }
 
                 try {
+                    // 根据 Setter 方法获取属性名
                     String property = getSetterProperty(method);
+                    // 加载这个类，并实例化
                     Object object = objectFactory.getExtension(pt, property);
                     if (object != null) {
+                        // 反射注入
                         method.invoke(instance, object);
                     }
                 } catch (Exception e) {
@@ -807,6 +825,7 @@ public class ExtensionLoader<T> {
         }
 
         String value = defaultAnnotation.value();
+        // 只能有一个车默认值，这种 @SPI("dubbo,http") 就会报错
         if ((value = value.trim()).length() > 0) {
             String[] names = NAME_SEPARATOR.split(value);
             if (names.length > 1) {
@@ -911,10 +930,12 @@ public class ExtensionLoader<T> {
                     type + ", class line: " + clazz.getName() + "), class "
                     + clazz.getName() + " is not subtype of interface.");
         }
+        // 缓存到cachedAdaptiveClass字段
         if (clazz.isAnnotationPresent(Adaptive.class)) {
-            // 缓存到cachedAdaptiveClass字段
             cacheAdaptiveClass(clazz, overridden);
-        } else if (isWrapperClass(clazz)) {
+        }
+        // 缓存包装类
+        else if (isWrapperClass(clazz)) {
             cacheWrapperClass(clazz);
         } else {
             clazz.getConstructor();

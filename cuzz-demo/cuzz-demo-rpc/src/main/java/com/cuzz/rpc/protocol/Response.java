@@ -1,0 +1,52 @@
+package com.cuzz.rpc.protocol;
+
+
+import java.io.Serializable;
+
+public class Response implements Serializable {
+    private int code; // 响应的错误码，正常响应为0，非0表示异常响应
+    private String errMsg; // 异常信息
+    private Object result; // 响应结果
+
+    public Response(int code, String errMsg, Object result) {
+        this.code = code;
+        this.errMsg = errMsg;
+        this.result = result;
+    }
+
+    public Response() {
+    }
+
+    public int getCode() {
+        return code;
+    }
+
+    public void setCode(int code) {
+        this.code = code;
+    }
+
+    public String getErrMsg() {
+        return errMsg;
+    }
+
+    public void setErrMsg(String errMsg) {
+        this.errMsg = errMsg;
+    }
+
+    public Object getResult() {
+        return result;
+    }
+
+    public void setResult(Object result) {
+        this.result = result;
+    }
+
+    @Override
+    public String toString() {
+        return "Response{" +
+                "code=" + code +
+                ", errMsg='" + errMsg + '\'' +
+                ", result=" + result +
+                '}';
+    }
+}

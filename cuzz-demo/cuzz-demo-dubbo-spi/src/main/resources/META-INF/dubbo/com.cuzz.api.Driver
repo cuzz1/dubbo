@@ -1,0 +1,2 @@
+mysqlDriver=com.cuzz.mysql.MysqlDriver
+oracleDriver=com.cuzz.oracle.OracleDriver
