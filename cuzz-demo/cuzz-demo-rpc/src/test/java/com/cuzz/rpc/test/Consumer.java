@@ -9,11 +9,13 @@ public class Consumer {
         // 创建ZookeeperRegistry对象
         ZookeeperRegistry<ServerInfo> discovery = new ZookeeperRegistry<>();
         discovery.start();
-        // 创建代理对象，通过代理调用远端Server
-        DemoService demoService = CuzzRpcProxy.newInstance(DemoService.class, discovery);
-        // 调用sayHello()方法，并输出结果
-        Object result =  demoService.sayHello("cuzz");
-        System.out.println(result);
-        // Thread.sleep(10000000L);
+
+        for (int i = 0; i < 10; i++) {
+            // 创建代理对象，通过代理调用远端Server
+            DemoService demoService = CuzzRpcProxy.newInstance(DemoService.class, discovery);
+            // 调用sayHello()方法，并输出结果
+            String result = demoService.sayHello("cuzz");
+            System.out.println(result);
+        }
     }
 }

@@ -31,4 +31,12 @@ public class ServerInfo implements Serializable {
     public void setPort(int port) {
         this.port = port;
     }
+
+    @Override
+    public String toString() {
+        return "ServerInfo{" +
+                "host='" + host + '\'' +
+                ", port=" + port +
+                '}';
+    }
 }

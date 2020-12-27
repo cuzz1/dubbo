@@ -56,7 +56,8 @@ public class CuzzRpcProxy implements InvocationHandler {
         List<ServiceInstance<ServerInfo>> serviceInstances =
                 registry.queryForInstances(serviceName);
         ServiceInstance<ServerInfo> serviceInstance =
-                serviceInstances.get(0);
+                serviceInstances.get(ThreadLocalRandom.current().nextInt(serviceInstances.size()));
+        System.out.println("serverInfo: " + serviceInstance.getPayload());
         // 创建请求消息，然后调用remoteCall()方法请求上面选定的Server端
         String methodName = method.getName();
         Header header = headerCache.computeIfAbsent(method, h -> new Header(MAGIC, VERSION_1));
