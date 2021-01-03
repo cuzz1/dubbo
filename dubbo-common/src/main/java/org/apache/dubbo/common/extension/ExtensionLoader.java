@@ -623,7 +623,7 @@ public class ExtensionLoader<T> {
                 if (instance == null) {
                     try {
                         // 创建
-                        instance = createAdaptiveExtension();
+                        instance = createAdaptiveExtension(); // --->
                         cachedAdaptiveInstance.set(instance);
                     } catch (Throwable t) {
                         createAdaptiveInstanceError = t;
@@ -1054,7 +1054,7 @@ public class ExtensionLoader<T> {
     @SuppressWarnings("unchecked")
     private T createAdaptiveExtension() {
         try {
-            return injectExtension((T) getAdaptiveExtensionClass().newInstance());
+            return injectExtension((T) getAdaptiveExtensionClass().newInstance()); // ---> getAdaptiveExtensionClass
         } catch (Exception e) {
             throw new IllegalStateException("Can't create adaptive extension " + type + ", cause: " + e.getMessage(), e);
         }
@@ -1065,7 +1065,7 @@ public class ExtensionLoader<T> {
         if (cachedAdaptiveClass != null) {
             return cachedAdaptiveClass;
         }
-        return cachedAdaptiveClass = createAdaptiveExtensionClass();
+        return cachedAdaptiveClass = createAdaptiveExtensionClass(); // --->
     }
 
     private Class<?> createAdaptiveExtensionClass() {

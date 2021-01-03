@@ -16,6 +16,7 @@
     <modules>
         <module>cuzz-demo-dubbo-spi</module>
         <module>cuzz-demo-spi</module>
+        <module>cuzz-demo-rpc</module>
     </modules>
 
     <properties>

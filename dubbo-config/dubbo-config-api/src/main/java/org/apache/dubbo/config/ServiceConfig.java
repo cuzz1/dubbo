@@ -190,6 +190,12 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
             bootstrap.init();
         }
 
+          // 检查配置：
+          //  1.检测 <dubbo:service> 标签的 interface 属性合法性，不合法则抛出异常
+          //  2.检测 ProviderConfig、ApplicationConfig 等核心配置类对象是否为空，若为空，则尝试从其他配置类对象中获取相应的实例。
+          //  3.检测并处理泛化服务和普通服务类
+          //  4.检测本地存根配置，并进行相应的处理
+          //  5.对 ApplicationConfig、RegistryConfig 等配置类进行检测，为空则尝试创建，若无法创建则抛出异常
         checkAndUpdateSubConfigs();
 
         //init serviceMetadata
@@ -297,6 +303,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         if (StringUtils.isEmpty(path)) {
             path = interfaceName;
         }
+        // 多协议多注册中心导出服务
         doExportUrls();
     }
 
@@ -312,6 +319,7 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
                 serviceMetadata
         );
 
+        // 加载注册中心链接
         List<URL> registryURLs = ConfigValidationUtils.loadRegistries(this, true);
 
         for (ProtocolConfig protocolConfig : protocols) {
@@ -456,11 +464,11 @@ public class ServiceConfig<T> extends ServiceConfigBase<T> {
         if (!SCOPE_NONE.equalsIgnoreCase(scope)) {
 
             // export to local if the config is not remote (export to remote only when config is remote)
-            if (!SCOPE_REMOTE.equalsIgnoreCase(scope)) {
+            if (!SCOPE_REMOTE.equalsIgnoreCase(scope)) { // 导入本地
                 exportLocal(url);
             }
             // export to remote if the config is not local (export to local only when config is local)
-            if (!SCOPE_LOCAL.equalsIgnoreCase(scope)) {
+            if (!SCOPE_LOCAL.equalsIgnoreCase(scope)) { // 导入远程
                 if (CollectionUtils.isNotEmpty(registryURLs)) {
                     for (URL registryURL : registryURLs) {
                         //if protocol is only injvm ,not register

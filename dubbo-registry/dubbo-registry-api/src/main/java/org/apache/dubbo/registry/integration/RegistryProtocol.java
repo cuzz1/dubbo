@@ -177,7 +177,10 @@ public class RegistryProtocol implements Protocol {
         return overrideListeners;
     }
 
+    // registryUrl              zookeeper://127.0.0.1:2181/org.apache.dubbo.registry.RegistryService?application=dubbo-demo-api-provider&dubbo=2.0.2&export=dubbo%3A%2F%2F192.168.0.101%3A20880%2Forg.apache.dubbo.demo.DemoService%3Fanyhost%3Dtrue%26application%3Ddubbo-demo-api-provider%26bind.ip%3D192.168.0.101%26bind.port%3D20880%26default%3Dtrue%26deprecated%3Dfalse%26dubbo%3D2.0.2%26dynamic%3Dtrue%26generic%3Dfalse%26interface%3Dorg.apache.dubbo.demo.DemoService%26methods%3DsayHello%2CsayHelloAsync%26pid%3D24373%26release%3D%26revision%3D1.0.1%26side%3Dprovider%26timestamp%3D1609654420176%26version%3D1.0.1&pid=24373&timestamp=1609654417062
+    // registeredProviderUrl    dubbo://192.168.0.101:20880/org.apache.dubbo.demo.DemoService?anyhost=true&application=dubbo-demo-api-provider&default=true&deprecated=false&dubbo=2.0.2&dynamic=true&generic=false&interface=org.apache.dubbo.demo.DemoService&methods=sayHello,sayHelloAsync&pid=24373&release=&revision=1.0.1&side=provider&timestamp=1609654420176&version=1.0.1
     private void register(URL registryUrl, URL registeredProviderUrl) {
+        // 第一步是获取注册中心实例，第二步是向注册中心注册服务
         Registry registry = registryFactory.getRegistry(registryUrl);
         registry.register(registeredProviderUrl);
     }
@@ -214,7 +217,7 @@ public class RegistryProtocol implements Protocol {
 
         // decide if we need to delay publish
         boolean register = providerUrl.getParameter(REGISTER_KEY, true);
-        if (register) {
+        if (register) { // 注册
             register(registryUrl, registeredProviderUrl);
         }
 
